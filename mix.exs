@@ -26,6 +26,8 @@ defmodule ExrmRpm.Mixfile do
   #
   # Type `mix help deps` for more examples and options
   defp deps do
-    []
+    [
+      {:exrm, "~>0.6.10"}
+    ]
   end
 end
