@@ -43,23 +43,24 @@ defmodule ReleaseManager.Plugin.Rpm do
   defp do_config(%Config{name: name, version: version} = config) do
     app_name = "#{name}-#{version}.tar.gz"
     build_dir = config |> Map.get(:build_dir, Path.join([File.cwd!, "_build", "rpm"]))
+    build_arch = config |> Map.get(:build_arch, @_DEFAULT_BUILD_ARCH)
     config
       |> Map.merge(%{ 
         priv:          config |> Map.get(:priv_path, Path.join([__DIR__, "..", "..", "priv"]) |> Path.expand),
         build_dir:     build_dir,
         app_name:      app_name,
         app_tar_path:  Path.join([File.cwd!, "rel", name, app_name]),
-        target_rpm_path: Path.join([File.cwd!, "rel", name, "releases", version, rpm_file_name(name, version)]),
+        target_rpm_path: Path.join([File.cwd!, "rel", name, "releases", version, rpm_file_name(name, version, build_arch)]),
         sources_path:  Path.join([build_dir, "SOURCES", app_name]),
         init_dir:      Path.join(["etc", "init.d"]),
         rpmbuild:      "/usr/bin/rpmbuild",
         rpmbuild_opts: "-bb", 
-        build_arch:    config |> Map.get(:build_arch, @_DEFAULT_BUILD_ARCH),
+        build_arch:    build_arch,
       })
   end
 
   defp do_spec(%Config{name: name, version: version} = config) do
-    info "Generating rpm..." 
+    debug "Generating spec file..." 
 
     dest = Path.join([config.build_dir, "SPECS", "#{name}.spec"])
     spec = get_rpm_template_path(config.priv, @_SPEC)
@@ -82,7 +83,7 @@ defmodule ReleaseManager.Plugin.Rpm do
   end
 
   defp do_init_script(%Config{name: name, version: version} = config) do
-    info "Generating init.d script..." 
+    debug "Generating init.d script..." 
 
     dest = Path.join([config.build_dir, "SOURCES", "#{name}"])
 
@@ -95,13 +96,13 @@ defmodule ReleaseManager.Plugin.Rpm do
   end
 
   defp create_rpm(%Config{name: name, version: version} = config) do
-    info "Building rpm..." 
+    debug "Building rpm..." 
 
     if File.exists? config.app_tar_path do
       File.cp!(config.app_tar_path, config.sources_path)
       spec_path = Path.join([config.build_dir, "SPECS", "#{name}.spec"])
       build_rpm_path = Path.join([config.build_dir, "RPMS", config.build_arch, 
-        rpm_file_name(name, version)])
+        rpm_file_name(name, version, config.build_arch)])
       unless File.exists?(config.rpmbuild) do
         warn """
         Cannot find rpmbuild tool #{config.rpmbuild}. Skipping rpm build!
@@ -110,7 +111,7 @@ defmodule ReleaseManager.Plugin.Rpm do
       else
         System.cmd "#{config.rpmbuild} #{config.rpmbuild_opts} #{spec_path}"
         File.copy! build_rpm_path, config.target_rpm_path
-        info "Rpm file #{config.target_rpm_path} created!"
+        info "Rpm file created!"
       end 
     else
       error "Could not find the release file #{config.app_tar_path}"
@@ -132,6 +133,6 @@ defmodule ReleaseManager.Plugin.Rpm do
     end
   end
 
-  defp rpm_file_name(name, version), do: "#{name}-#{version}-0.rpm"
+  defp rpm_file_name(name, version, arch), do: "#{name}-#{version}-0.#{arch}.rpm"
 
 end

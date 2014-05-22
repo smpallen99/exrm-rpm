@@ -21,7 +21,7 @@ This project's goal is to make building a rpm for an Elixir release very simple,
 #### Add exrm_rpm as a dependency to your project
 ```elixir
   defp deps do
-    [{:exrm_rpm, "~> 0.1.0"}]
+    [{:exrm_rpm, github: "smpallen99/exrm-rpm"}]
   end
 ```
 
@@ -37,9 +37,9 @@ This project's goal is to make building a rpm for an Elixir release very simple,
 #### Copy the rpm to your target system and install
 
 ```
-> scp _build/rpm/RPMS/x86_64/test-0.0.1-0.tar.gz me@example.com:/tmp/
+> scp rel/test/releases/0.0.1/test-0.0.1-0.x86_64.rpm me@example.com:/tmp/
 > ssh me@example.com
-> rpm -i /tmp/test-0.0.1-0.tar.gz
+> rpm -i /tmp/test-0.0.1-0.x86_64.rpm
 ```
 
 #### Manage the service on your target system
@@ -94,14 +94,13 @@ The next time you run `mix release --rpm`, it will use the custom templates.
 
 - _build/rpm/SPECS/name.spec      # the generated spec file used to build the rpm
 - _build/rpm/SOURCES/name         # the generated init script included in the rpm
-- _build/rpm/RPMS/x86_64/name-version-x86_64.rpm  # the generated rpm
+- rel/name/releases/version/name-version-arch.rpm  # the generated rpm
 
 ## TODO
 
 1. Add clean support
 2. Add more configuration options to config.exs (build_arch, rpmbuild, etc.)
-3. Move the generated rpm the rel directory
-4. Create the correct _build/rpm/RPMS/arch folders 
+3. Create the correct _build/rpm/RPMS/arch folders 
 4. More testing
 5. Get feedback
 
