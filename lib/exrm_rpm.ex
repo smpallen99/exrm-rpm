@@ -62,8 +62,9 @@ defmodule ReleaseManager.Plugin.Rpm do
 
     dest = Path.join([config.build_dir, "SPECS", "#{name}.spec"])
     spec = get_rpm_template_path(config.priv, @_SPEC)
-    summary     = Mix.Project.config |> Keyword.get(:summary, @_DEFAULT_SUMMARY)
-    description = Mix.Project.config |> Keyword.get(:descrption, @_DEFAULT_DESCRIPTION)
+    app         = binary_to_atom name
+    summary     = Application.get_env(app, :summary, @_DEFAULT_SUMMARY)
+    description = Application.get_env(app, :description, @_DEFAULT_DESCRIPTION)
 
     build_tmp_build(config.build_dir)
 
