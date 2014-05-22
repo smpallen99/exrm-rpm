@@ -12,8 +12,7 @@ defmodule ExrmRpm.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [],
-     mod: {ExrmRpm, []}]
+    [applications: []]
   end
 
   # Dependencies can be hex.pm packages:
