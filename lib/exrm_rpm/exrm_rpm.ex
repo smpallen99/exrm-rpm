@@ -45,10 +45,11 @@ defmodule ReleaseManager.Plugin.Rpm do
     build_dir = config |> Map.get(:build_dir, Path.join([File.cwd!, "_build", "rpm"]))
     config
       |> Map.merge(%{ 
-        priv:          config |> Map.get(:priv_path, Path.join([__DIR__, "..", "priv"]) |> Path.expand),
+        priv:          config |> Map.get(:priv_path, Path.join([__DIR__, "..", "..", "priv"]) |> Path.expand),
         build_dir:     build_dir,
         app_name:      app_name,
         app_tar_path:  Path.join([File.cwd!, "rel", name, app_name]),
+        target_rpm_path: Path.join([File.cwd!, "rel", name, "releases", version, rpm_file_name(name, version)]),
         sources_path:  Path.join([build_dir, "SOURCES", app_name]),
         init_dir:      Path.join(["etc", "init.d"]),
         rpmbuild:      "/usr/bin/rpmbuild",
@@ -99,6 +100,8 @@ defmodule ReleaseManager.Plugin.Rpm do
     if File.exists? config.app_tar_path do
       File.cp!(config.app_tar_path, config.sources_path)
       spec_path = Path.join([config.build_dir, "SPECS", "#{name}.spec"])
+      build_rpm_path = Path.join([config.build_dir, "RPMS", config.build_arch, 
+        rpm_file_name(name, version)])
       unless File.exists?(config.rpmbuild) do
         warn """
         Cannot find rpmbuild tool #{config.rpmbuild}. Skipping rpm build!
@@ -106,6 +109,8 @@ defmodule ReleaseManager.Plugin.Rpm do
         """
       else
         System.cmd "#{config.rpmbuild} #{config.rpmbuild_opts} #{spec_path}"
+        File.copy! build_rpm_path, config.target_rpm_path
+        info "Rpm file #{config.target_rpm_path} created!"
       end 
     else
       error "Could not find the release file #{config.app_tar_path}"
@@ -126,5 +131,7 @@ defmodule ReleaseManager.Plugin.Rpm do
       Path.join([priv, "rel", "files", filename])
     end
   end
+
+  defp rpm_file_name(name, version), do: "#{name}-#{version}-0.rpm"
 
 end
