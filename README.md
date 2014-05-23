@@ -1,4 +1,4 @@
-# Elixir Release Manager RPM Generator Plug-in
+# Elixir Release Manager RPM Generator
 
 ## Usage
 

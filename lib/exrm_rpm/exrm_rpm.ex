@@ -82,7 +82,7 @@ defmodule ReleaseManager.Plugin.Rpm do
     config
   end
 
-  defp do_init_script(%Config{name: name, version: version} = config) do
+  defp do_init_script(%Config{name: name, version: _version} = config) do
     debug "Generating init.d script..." 
 
     dest = Path.join([config.build_dir, "SOURCES", "#{name}"])

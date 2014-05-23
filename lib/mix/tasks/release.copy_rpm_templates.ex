@@ -37,7 +37,6 @@ defmodule Mix.Tasks.Release.Copy_rpm_templates do
     cwd        = File.cwd!
     priv       = config |> Keyword.get(:priv_path)
     overwrite? = config |> Keyword.get(:overwrite)
-    name       = Mix.project |> Keyword.get(:app) |> atom_to_binary
 
     templ_dir  = Path.join([cwd, @_RPM_TEMPLATE_DIR])
 
