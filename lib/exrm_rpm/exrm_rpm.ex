@@ -17,12 +17,8 @@ defmodule ReleaseManager.Plugin.Rpm do
     ["BUILD"]
   ]
 
-  @_RELEASES    "{{{RELEASES}}}"
   @_NAME        "{{{PROJECT_NAME}}}"
   @_VERSION     "{{{PROJECT_VERSION}}}"
-  @_ERTS_VSN    "{{{ERTS_VERSION}}}"
-  @_ERL_OPTS    "{{{ERL_OPTS}}}"
-  @_ELIXIR_PATH "{{{ELIXIR_PATH}}}"
   @_TOPDIR      "{{{PROJECT_TOPDIR}}}"
   @_BUILD_ARCH  "{{{BUILD_ARCHITECTURE}}}"
   @_SUMMARY     "{{{SUMMARY}}}"
@@ -62,8 +58,8 @@ defmodule ReleaseManager.Plugin.Rpm do
   defp do_spec(%Config{name: name, version: version} = config) do
     debug "Generating spec file..." 
 
-    dest = Path.join([config.build_dir, "SPECS", "#{name}.spec"])
-    spec = get_rpm_template_path(config.priv, @_SPEC)
+    dest        = Path.join([config.build_dir, "SPECS", "#{name}.spec"])
+    spec        = get_rpm_template_path(config.priv, @_SPEC)
     app         = binary_to_atom name
     summary     = Application.get_env(app, :summary, @_DEFAULT_SUMMARY)
     description = Application.get_env(app, :description, @_DEFAULT_DESCRIPTION)
@@ -100,23 +96,28 @@ defmodule ReleaseManager.Plugin.Rpm do
 
     if File.exists? config.app_tar_path do
       File.cp!(config.app_tar_path, config.sources_path)
-      spec_path = Path.join([config.build_dir, "SPECS", "#{name}.spec"])
-      build_rpm_path = Path.join([config.build_dir, "RPMS", config.build_arch, 
-        rpm_file_name(name, version, config.build_arch)])
-      unless File.exists?(config.rpmbuild) do
-        warn """
-        Cannot find rpmbuild tool #{config.rpmbuild}. Skipping rpm build!
-        The generated build files can be found in #{config.build_dir} 
-        """
-      else
-        System.cmd "#{config.rpmbuild} #{config.rpmbuild_opts} #{spec_path}"
-        File.copy! build_rpm_path, config.target_rpm_path
-        info "Rpm file created!"
-      end 
+      run_rpmbulid config, File.exists?(config.rpmbuild)
     else
       error "Could not find the release file #{config.app_tar_path}"
     end
     config
+  end
+
+  defp run_rpmbulid(%Config{name: name, version: version} = config, rpmbuild?) when rpmbuild? do
+    spec_path = Path.join([config.build_dir, "SPECS", "#{name}.spec"])
+    build_rpm_path = Path.join([config.build_dir, "RPMS", config.build_arch, 
+      rpm_file_name(name, version, config.build_arch)])
+
+    System.cmd "#{config.rpmbuild} #{config.rpmbuild_opts} #{spec_path}"
+    File.copy! build_rpm_path, config.target_rpm_path
+    info "Rpm file created!"
+  end
+
+  defp run_rpmbulid(config, _) do
+    warn """
+    Cannot find rpmbuild tool #{config.rpmbuild}. Skipping rpm build!
+    The generated build files can be found in #{config.build_dir} 
+    """
   end
 
   defp build_tmp_build(build_dir) do
