@@ -1,5 +1,7 @@
 # Elixir Release Manager RPM Generator
 
+Adds simple RPM generation to the exrm package manager. 
+
 ## Usage
 
 You can build an rpm at the same time as building a release by adding the `--rpm` option to `release`
@@ -13,6 +15,10 @@ task.
 - `mix release.copy_rpm_templates`
 
 To see what flags can be passed, use `mix help release.copy_rpm_templates`.
+
+The `_build/rpm` directory tree, along with the rest of the release with `mix release.clean`
+
+Please visit [https://github.com/bitwalker/exrm](exrm) for additional information using exrm.
 
 ## Getting Started
 
@@ -30,7 +36,7 @@ This project's goal is to make building a rpm for an Elixir release very simple,
 - `mix deps.get`
 - `mix deps.compile`
 
-#### Perform a release and rpm build
+#### Perform a release and build a rpm
 
 - `mix release --rpm`
 
@@ -58,6 +64,7 @@ Edit your projects `config/config.exs` file
 ```elixir
 [
   test: [
+     build_arch:    "x86-64",
      summary: "An example rpm build project ...",
      description: """
      This is the description of my test project. 
@@ -83,15 +90,33 @@ You can also edit the init script template
 
 The next time you run `mix release --rpm`, it will use the custom templates.
 
-## The details
+> Lack of support for a mix task to remove custom templates is deliberate. Once created, 
+> these files are considered part of your projects source code and should be managed appropriately.
 
-#### The generated rpm installs the following
+## Additional Notes
 
-- the release in `/usr/local/app_name`
-- an init.d script to manage the service
+- The generated rpm installs the following
+    - the release in `/usr/local/app_name`
+    - an init.d script to manage the service
 
-#### During the rpm build process, the following directory tree and files are created:
+- During the rpm build process, the following directory tree and files are created:
+    - `_build/rpm/SPECS/name.spec` - the generated spec file used to build the rpm
+    - `_build/rpm/SOURCES/name` - the generated init script included in the rpm
+    - `rel/name/releases/version/name-version-arch.rpm` - the generated rpm
 
-- _build/rpm/SPECS/name.spec      # the generated spec file used to build the rpm
-- _build/rpm/SOURCES/name         # the generated init script included in the rpm
-- rel/name/releases/version/name-version-arch.rpm  # the generated rpm
+## Acknowledgements
+
+- Thanks to @bitwalker for the exrm plugin capabilities and all his help.
+
+## Feedback
+
+This project was built based on my experience building RPMs for E-MetroTels's products. 
+I welcome input from others.
+
+## License
+
+exrm_rpm is copyright (c) 2014 E-MetroTel. 
+
+The source code is released under the MIT License.
+
+Check [LICENSE](LICENSE) for more information.

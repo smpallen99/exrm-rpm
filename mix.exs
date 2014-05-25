@@ -14,7 +14,7 @@ defmodule ExrmRpm.Mixfile do
 
   defp deps do
     [
-      {:exrm, "~>0.7.1"}
+      {:exrm, "~> 0.7.2"}
     ]
   end
 end
