@@ -16,7 +16,7 @@ defmodule ReleaseManager.Plugin.Rpm do
   @_RPM_SPEC_DIRS  [
     ["SPECS"], 
     ["SOURCES"],
-    ["RPMS", "x86_64"],
+    ["RPMS"],
     ["SRPMS"],
     ["BUILD"]
   ]
@@ -81,7 +81,7 @@ defmodule ReleaseManager.Plugin.Rpm do
     dest        = Path.join([config.build_dir, "SPECS", "#{config.name}.spec"])
     spec        = get_rpm_template_path(config.priv_path, @_SPEC)
 
-    build_tmp_build(config.build_dir)
+    build_tmp_build(config)
 
     contents = File.read!(spec)
     |> String.replace(@_NAME, config.name)
@@ -137,9 +137,10 @@ defmodule ReleaseManager.Plugin.Rpm do
     """
   end
 
-  defp build_tmp_build(build_dir) do
+  defp build_tmp_build(config) do
     @_RPM_SPEC_DIRS 
-    |> Enum.each(&(File.mkdir_p! Path.join([build_dir | &1])))
+    |> Enum.each(&(File.mkdir_p! Path.join([config.build_dir | &1])))
+    File.mkdir_p! Path.join([config.build_dir, "RPMS", config.build_arch])
   end
 
   defp get_rpm_template_path(priv_path, filename) do
@@ -151,7 +152,7 @@ defmodule ReleaseManager.Plugin.Rpm do
     end
   end
 
-  defp rpm_file_name(name, version, arch), do: "#{name}-#{version}-0.#{arch}.rpm"
+  def rpm_file_name(name, version, arch), do: "#{name}-#{version}-0.#{arch}.rpm"
 
   def get_config_item(config, item, default) do
     app    = binary_to_atom config.name
