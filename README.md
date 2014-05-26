@@ -18,7 +18,7 @@ To see what flags can be passed, use `mix help release.copy_rpm_templates`.
 
 The `_build/rpm` directory tree, along with the rest of the release with `mix release.clean`
 
-Please visit [https://github.com/bitwalker/exrm](exrm) for additional information using exrm.
+Please visit [exrm](https://github.com/bitwalker/exrm) for additional information. 
 
 ## Getting Started
 
@@ -27,7 +27,7 @@ This project's goal is to make building a rpm for an Elixir release very simple,
 #### Add exrm_rpm as a dependency to your project
 ```elixir
   defp deps do
-    [{:exrm_rpm, github: "smpallen99/exrm-rpm"}]
+    [{:exrm_rpm, "~> 0.1.0"}]
   end
 ```
 
@@ -64,12 +64,11 @@ Edit your projects `config/config.exs` file
 ```elixir
 [
   test: [
-     build_arch:    "x86-64",
-     summary: "An example rpm build project ...",
-     description: """
-     This is the description of my test project. 
-     Use it wisely...
-     """,
+    summary: "An example rpm build project ...",
+    description: """
+    This is the description of my test project. 
+    Use it wisely...
+    """,
   ]
 ]
 ```

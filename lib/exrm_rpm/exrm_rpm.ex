@@ -11,7 +11,6 @@ defmodule ReleaseManager.Plugin.Rpm do
   @_DEFAULT_SUMMARY     "Add a summary entry in your project config"
   @_DEFAULT_DESCRIPTION "Add a description your config file"
   @_RPM_TEMPLATE_DIR    Path.join([@_RPM_DIR, "templates"])
-  @_INIT_D_PATH         Path.join(["etc", "init.d"])
 
   @_RPM_SPEC_DIRS  [
     ["SPECS"], 
@@ -62,7 +61,6 @@ defmodule ReleaseManager.Plugin.Rpm do
     })
     |> Map.merge(
       (for {item, default} <- [
-        init_dir:        @_INIT_D_PATH,
         rpmbuild:        @_RPM_BUILD_TOOL,
         rpmbuild_opts:   @_RPM_BUILD_ARGS, 
         priv_path:       Path.join([__DIR__, "..", "..", "priv"]) |> Path.expand,
