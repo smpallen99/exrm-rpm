@@ -5,13 +5,21 @@ defmodule ExrmRpm.Mixfile do
     [app: :exrm_rpm,
      version: "0.1.1",
      elixir: "~> 0.13.2",
-     description: "Adds simple RPM generation to the exrm package manager.",
+     description: description,
      package: package,
      deps: deps]
   end
 
   def application do
     [applications: []]
+  end
+
+  defp description do
+    """
+    Adds simple Red Hat Package Manager (RPM) generation to the exrm package manager.
+    The generated RPM file includes the Elixir release and an init.d script to 
+    manage the project's service.
+    """
   end
 
   defp deps do

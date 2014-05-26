@@ -1,6 +1,6 @@
 # Elixir Release Manager RPM Generator
 
-Adds simple RPM generation to the exrm package manager. 
+Adds simple [Red Hat Package Manager](http://en.wikipedia.org/wiki/RPM_Package_Manager) (RPM) generation to the exrm package manager. 
 
 ## Usage
 
@@ -102,6 +102,12 @@ The next time you run `mix release --rpm`, it will use the custom templates.
     - `_build/rpm/SPECS/name.spec` - the generated spec file used to build the rpm
     - `_build/rpm/SOURCES/name` - the generated init script included in the rpm
     - `rel/name/releases/version/name-version-arch.rpm` - the generated rpm
+
+## Import Links
+
+- [RPM Package Manager](http://en.wikipedia.org/wiki/RPM_Package_Manager)
+- [exrm-rpm on Hex.pm](https://hex.pm/packages/exrm_rpm)
+- [How to create an rpm](https://fedoraproject.org/wiki/How_to_create_an_RPM_package)
 
 ## Acknowledgements
 
