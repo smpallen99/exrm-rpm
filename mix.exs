@@ -3,7 +3,7 @@ defmodule ExrmRpm.Mixfile do
 
   def project do
     [app: :exrm_rpm,
-     version: "0.1.1",
+     version: "0.2.0",
      elixir: "~> 0.13.2",
      description: description,
      package: package,
@@ -23,7 +23,7 @@ defmodule ExrmRpm.Mixfile do
   end
 
   defp deps do
-    [{:exrm, "~> 0.7.2"}]
+    [{:exrm, "~> 0.7.3"}]
   end
 
   defp package do
