@@ -92,6 +92,16 @@ The next time you run `mix release --rpm`, it will use the custom templates.
 > Lack of support for a mix task to remove custom templates is deliberate. Once created, 
 > these files are considered part of your projects source code and should be managed appropriately.
 
+### Add additional installation files
+
+If your application requires additional installation files, create a new `sources` directory under the `rpm` directory.
+
+`mkdir rpm/sources`
+
+Add the additional files into this directory. They will be copied into the build 'SOURCES' directory prior to running rpm-build.
+
+Finally, add the new sources in the spec template and the appropriate spec file logic to process the additional files.
+
 ## Additional Notes
 
 - The generated rpm installs the following

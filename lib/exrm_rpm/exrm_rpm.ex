@@ -11,6 +11,7 @@ defmodule ReleaseManager.Plugin.Rpm do
   @_DEFAULT_SUMMARY     "Add a summary entry in your project config"
   @_DEFAULT_DESCRIPTION "Add a description your config file"
   @_RPM_TEMPLATE_DIR    Path.join([@_RPM_DIR, "templates"])
+  @_EXTRA_SOURCES       Path.join([@_RPM_DIR, "sources"])
 
   @_RPM_SPEC_DIRS  [
     ["SPECS"], 
@@ -34,6 +35,7 @@ defmodule ReleaseManager.Plugin.Rpm do
     |> do_config
     |> do_spec
     |> do_init_script
+    |> copy_extra_sources
     |> create_rpm
   end
 
@@ -69,6 +71,7 @@ defmodule ReleaseManager.Plugin.Rpm do
         app_tar_path:    Path.join([File.cwd!, "rel", name, app_name]),
         summary:         @_DEFAULT_SUMMARY,
         description:     @_DEFAULT_DESCRIPTION,
+        extra_sources:   @_EXTRA_SOURCES,
        ], do: {item, get_config_item(config, item, default)} ) 
       |> Enum.into(%{}))
   end
@@ -103,6 +106,16 @@ defmodule ReleaseManager.Plugin.Rpm do
     |> String.replace(@_NAME, config.name)
 
     File.write!(dest, contents)
+    config
+  end
+
+  defp copy_extra_sources(config) do
+    debug "Copying additional sources..."
+
+    if File.exists? config.extra_sources do
+      dest = Path.join([config.build_dir, "SOURCES"])
+      File.cp_r! config.extra_sources, dest
+    end
     config
   end
 
