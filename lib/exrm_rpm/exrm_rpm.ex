@@ -40,6 +40,7 @@ defmodule ReleaseManager.Plugin.Rpm do
   end
 
   def after_release(_), do: nil
+  def after_package(_), do: nil
 
   def after_cleanup(_args) do
     build_dir = Path.join([File.cwd!, "_build", "rpm"])
@@ -58,7 +59,7 @@ defmodule ReleaseManager.Plugin.Rpm do
     |> Map.merge(%{ 
       build_dir:       build_dir,
       app_name:        app_name,
-      app:             binary_to_atom(name),
+      app:             String.to_atom(name),
       build_arch:      build_arch,
     })
     |> Map.merge(
@@ -136,7 +137,7 @@ defmodule ReleaseManager.Plugin.Rpm do
     build_rpm_path = Path.join([config.build_dir, "RPMS", config.build_arch, 
       rpm_file_name(config.name, config.version, config.build_arch)])
 
-    System.cmd "#{config.rpmbuild} #{config.rpmbuild_opts} #{spec_path}"
+    System.cmd(config.rpmbuild, [ config.rpmbuild_opts, spec_path ])
     File.copy! build_rpm_path, config.target_rpm_path
     info "Rpm file created!"
   end
@@ -166,7 +167,7 @@ defmodule ReleaseManager.Plugin.Rpm do
   def rpm_file_name(name, version, arch), do: "#{name}-#{version}-0.#{arch}.rpm"
 
   def get_config_item(config, item, default) do
-    app    = binary_to_atom config.name
+    app    = String.to_atom config.name
     config |> Map.get(item, Application.get_env(app, item, default))
   end
 

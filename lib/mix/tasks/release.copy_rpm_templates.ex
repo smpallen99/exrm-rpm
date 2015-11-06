@@ -24,7 +24,7 @@ defmodule Mix.Tasks.Release.Copy_rpm_templates do
   def run(args) do
     debug "creating copies...."
     config = [ priv_path:  Path.join([__DIR__, "..", "..", "..", "priv"]) |> Path.expand,
-               name:       Mix.project |> Keyword.get(:app) |> atom_to_binary,
+               name:       Mix.project |> Keyword.get(:app) |> Atom.to_string,
              ]
     config
     |> Keyword.merge(args |> parse_args)

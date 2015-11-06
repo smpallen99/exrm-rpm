@@ -23,7 +23,7 @@ defmodule ExrmRpm.Mixfile do
   end
 
   defp deps do
-    [{:exrm, "~> 0.7.3"}]
+    [{:exrm, git: "https://github.com/bitwalker/exrm.git", tag: "0.19.6"}]
   end
 
   defp package do
