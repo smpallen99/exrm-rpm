@@ -134,10 +134,10 @@ defmodule ReleaseManager.Plugin.Rpm do
 
   defp run_rpmbulid(config, rpmbuild?) when rpmbuild? do
     spec_path = Path.join([config.build_dir, "SPECS", "#{config.name}.spec"])
+    System.cmd(config.rpmbuild, [ config.rpmbuild_opts, spec_path ])
+
     [build_rpm_path] = Path.join([config.build_dir, "RPMS", config.build_arch,
       rpm_file_name(config.name, config.version, config.build_arch, true)]) |> Path.wildcard
-
-    System.cmd(config.rpmbuild, [ config.rpmbuild_opts, spec_path ])
     File.copy! build_rpm_path, config.target_rpm_path
     info "Rpm file created!"
   end
