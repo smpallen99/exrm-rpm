@@ -15,7 +15,7 @@ defmodule Mix.Tasks.Release.Copy_rpm_templates do
   @shortdoc "Create a copy of the Rpm Templates."
 
   use     Mix.Task
-  import  ReleaseManager.Utils
+  import  ReleaseManager.Utils.Logger
 
   @_RPM_DIR  "rpm"
   @_RPM_TEMPLATE_DIR   Path.join([@_RPM_DIR, "templates"])
