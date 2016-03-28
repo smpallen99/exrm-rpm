@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Release.Copy_rpm_templates do
+defmodule Mix.Tasks.Release.Rpm.Copy.Templates do
   @moduledoc """
   Create a copy of the Rpm Templates
 
