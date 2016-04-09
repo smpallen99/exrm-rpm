@@ -3,7 +3,7 @@ defmodule ExrmRpm.Mixfile do
 
   def project do
     [app: :exrm_rpm,
-     version: "0.3.0",
+     version: "0.3.3",
      elixir: "~> 1.0",
      description: description,
      package: package,
@@ -23,7 +23,7 @@ defmodule ExrmRpm.Mixfile do
   end
 
   defp deps do
-    [{:exrm, git: "https://github.com/bitwalker/exrm.git", tag: "0.19.6"}]
+    [{:exrm, "~> 1.0.0"}]
   end
 
   defp package do

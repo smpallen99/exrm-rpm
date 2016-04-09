@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Release.Copy_rpm_templates do
+defmodule Mix.Tasks.Release.Rpm.Copy.Templates do
   @moduledoc """
   Create a copy of the Rpm Templates
 
@@ -15,7 +15,7 @@ defmodule Mix.Tasks.Release.Copy_rpm_templates do
   @shortdoc "Create a copy of the Rpm Templates."
 
   use     Mix.Task
-  import  ReleaseManager.Utils
+  import  ReleaseManager.Utils.Logger
 
   @_RPM_DIR  "rpm"
   @_RPM_TEMPLATE_DIR   Path.join([@_RPM_DIR, "templates"])
@@ -24,7 +24,7 @@ defmodule Mix.Tasks.Release.Copy_rpm_templates do
   def run(args) do
     debug "creating copies...."
     config = [ priv_path:  Path.join([__DIR__, "..", "..", "..", "priv"]) |> Path.expand,
-               name:       Mix.project |> Keyword.get(:app) |> Atom.to_string,
+               name:       Mix.Project.config |> Keyword.get(:app) |> Atom.to_string,
              ]
     config
     |> Keyword.merge(args |> parse_args)
