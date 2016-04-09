@@ -29,6 +29,7 @@ defmodule ExrmRpm.Mixfile do
   defp package do
     [ files: ["lib", "priv", "mix.exs", "README.md", "LICENSE"],
       contributors: ["Stephen Pallen"],
+      maintainers: ["Stephen Pallen"],
       licenses: ["MIT"],
       links: [ { "GitHub", "https://github.com/smpallen99/exrm-rpm" } ] ]
   end
