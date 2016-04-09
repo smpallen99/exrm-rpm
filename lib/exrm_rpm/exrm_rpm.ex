@@ -139,7 +139,7 @@ defmodule ReleaseManager.Plugin.Rpm do
     [build_rpm_path] = Path.join([config.build_dir, "RPMS", config.build_arch,
       rpm_file_name(config.name, config.version, config.build_arch, true)]) |> Path.wildcard
     File.copy! build_rpm_path, config.target_rpm_path
-    info "Rpm file created!"
+    info "Rpm #{get_relative_path config.target_rpm_path} created!"
   end
 
   defp run_rpmbulid(config, _) do
@@ -162,6 +162,12 @@ defmodule ReleaseManager.Plugin.Rpm do
     else
       Path.join([priv_path, "rel", "files", filename])
     end
+  end
+
+  defp get_relative_path(path) do
+    rel_path = String.split(path, "/rel/")
+    |> Enum.at(1)
+    Path.join("./rel/", rel_path)
   end
 
   def rpm_file_name(name, version, arch, match \\ false),

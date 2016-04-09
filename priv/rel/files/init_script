@@ -35,8 +35,13 @@ message() {
 run() {
   HOME=$INSTALL_DIR $PROG $1 > /dev/null 2>&1
 }
+
+# run interactive. Don't redirect output
+run_i() {
+  HOME=$INSTALL_DIR $PROG $1
+}
+
 start() {
-        #echo -n $"Starting $PROG_NAME: "
         run start
         RETVAL=$?
         message $"Starting $PROG_NAME: "
@@ -49,7 +54,7 @@ stop() {
         return $RETVAL
 }
 restart() {
-       run restart
+        run restart
         RETVAL=$?
         message $"Restarting $PROG_NAME: "
         return $RETVAL
@@ -65,6 +70,12 @@ status() {
       fi
       return $RETVAL
 } 
+remote_console() {
+      run_i remote_console
+}
+console() {
+      run_i console
+}
 
 case "$1" in
         start)
@@ -80,8 +91,14 @@ case "$1" in
         restart)
                 restart
                 ;;
+        remote_console)
+                remote_console
+                ;;
+        console)
+                console
+                ;;
         *)
-                echo $"Usage: $0 {start|stop|status|restart}"
+                echo $"Usage: $0 {start|stop|status|restart|console|remote_console}"
                 exit 1
                 ;;
 esac

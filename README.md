@@ -12,9 +12,9 @@ This task first constructs the release using `exrm`, then generates an rpm file 
 default spec file and init script templates. If you would like to customize the templates, you can first run `the release.copy_rpm_templates`
 task.
 
-- `mix release.copy_rpm_templates`
+- `mix release.rpm.copy.templates`
 
-To see what flags can be passed, use `mix help release.copy_rpm_templates`.
+To see what flags can be passed, use `mix help release.rpm.copy.templates`.
 
 The `_build/rpm` directory tree, along with the rest of the release with `mix release.clean`
 
@@ -27,7 +27,7 @@ This project's goal is to make building a rpm for an Elixir release very simple,
 #### Add exrm_rpm as a dependency to your project
 ```elixir
   defp deps do
-    [{:exrm_rpm, "~> 0.3.0"}]
+    [{:exrm_rpm, "~> 0.3.3"}]
   end
 ```
 
@@ -51,9 +51,12 @@ This project's goal is to make building a rpm for an Elixir release very simple,
 #### Manage the service on your target system
 
 ```
-> service test status
+> service test start
 > service test stop
+> service test status
 > service test restart
+> service test remote_console
+> service test console
 ```
 
 ## Customizing the rpm
@@ -77,7 +80,7 @@ Edit your projects `config/config.exs` file
 
 Copy the templates with:
 
-`mix release.copy_rpm_templates`
+`mix release.rpm.copy.templates`
 
 Now edit the spec template in your favorite text editor
 
@@ -130,7 +133,7 @@ I welcome input from others.
 
 ## License
 
-exrm_rpm is copyright (c) 2014 E-MetroTel. 
+exrm_rpm is copyright (c) 2014-2016 E-MetroTel. 
 
 The source code is released under the MIT License.
 

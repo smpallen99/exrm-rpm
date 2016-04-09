@@ -6,10 +6,13 @@ defmodule Mix.Tasks.Release.Rpm.Copy.Templates do
 
   ## Examples
 
-    # Create a copy of the templates
-    mix release.copy_rpm_templates
-    # Over write existing custom templates
-    mix release.copy_rpm_templates --overwrite
+  ### Create a copy of the templates
+
+      mix release.rpm.copy.templates
+
+  ### Over write existing custom templates
+  
+      mix release.rpm.copy.templates --overwrite
 
   """
   @shortdoc "Create a copy of the Rpm Templates."

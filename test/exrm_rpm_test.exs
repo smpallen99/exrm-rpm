@@ -1,7 +1,6 @@
 defmodule ExrmRpmTest do
   use ExUnit.Case
   alias ReleaseManager.Config
-  alias ReleaseManager.Utils
   alias ReleaseManager.Plugin.Rpm
 
   setup do
