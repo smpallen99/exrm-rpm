@@ -31,6 +31,7 @@ defmodule ExrmRpm.Mixfile do
       contributors: ["Stephen Pallen"],
       maintainers: ["Stephen Pallen"],
       licenses: ["MIT"],
-      links: [ { "GitHub", "https://github.com/smpallen99/exrm-rpm" } ] ]
+      links: %{github: "https://github.com/smpallen99/exrm-rpm"}
+    ]
   end
 end
