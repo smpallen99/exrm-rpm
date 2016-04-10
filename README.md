@@ -27,9 +27,11 @@ This project's goal is to make building a rpm for an Elixir release very simple,
 #### Add exrm_rpm as a dependency to your project
 ```elixir
   defp deps do
-    [{:exrm_rpm, "~> 0.3.3"}]
+    [{:exrm_rpm, "~> 0.3.3", warn_missing: false}]
   end
 ```
+
+Note: The `warn_missing: false` will suppress the `exrm` missing dependency message.
 
 #### Fetch and Compile
 
