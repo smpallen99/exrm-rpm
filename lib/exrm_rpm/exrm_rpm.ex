@@ -43,16 +43,20 @@ defmodule ReleaseManager.Plugin.Rpm do
   def after_package(_), do: nil
 
   def after_cleanup(_args) do
-    build_dir = Path.join([File.cwd!, "_build", "rpm"])
+    build_dir = build_dir()
     if File.exists?(build_dir) do
       File.rm_rf!(build_dir)
       debug "Removed rpm build files..."
     end
   end
 
+  defp build_dir() do
+    Mix.Project.build_path() |> Path.join("rpm")
+  end
+
   defp do_config(%Config{name: name, version: version} = config) do
     app_name   = "#{name}-#{version}.tar.gz"
-    build_dir  = config |> get_config_item(:build_dir,  Path.join([File.cwd!, "_build", "rpm"]))
+    build_dir  = config |> get_config_item(:build_dir,  build_dir())
     build_arch = config |> get_config_item(:build_arch, @_DEFAULT_BUILD_ARCH)
 
     config
