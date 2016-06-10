@@ -56,6 +56,7 @@ defmodule ReleaseManager.Plugin.Rpm do
 
   defp do_config(%Config{name: name, version: version} = config) do
     app_name   = "#{name}-#{version}.tar.gz"
+    source_name   = "#{name}-#{version |> normalize_version}.tar.gz"
     build_dir  = config |> get_config_item(:build_dir,  build_dir())
     build_arch = config |> get_config_item(:build_arch, @_DEFAULT_BUILD_ARCH)
 
@@ -71,7 +72,7 @@ defmodule ReleaseManager.Plugin.Rpm do
         rpmbuild:        @_RPM_BUILD_TOOL,
         rpmbuild_opts:   @_RPM_BUILD_ARGS,
         priv_path:       Path.join([__DIR__, "..", "..", "priv"]) |> Path.expand,
-        sources_path:    Path.join([build_dir, "SOURCES", app_name]),
+        sources_path:    Path.join([build_dir, "SOURCES", source_name]),
         target_rpm_path: Path.join([File.cwd!, "rel", name, "releases", version, rpm_file_name(name, version, build_arch)]),
         app_tar_path:    Path.join([File.cwd!, "rel", name, app_name]),
         summary:         @_DEFAULT_SUMMARY,
@@ -91,7 +92,7 @@ defmodule ReleaseManager.Plugin.Rpm do
 
     contents = File.read!(spec)
     |> String.replace(@_NAME, config.name)
-    |> String.replace(@_VERSION, config.version)
+    |> String.replace(@_VERSION, config.version |> normalize_version)
     |> String.replace(@_TOPDIR, config.build_dir)
     |> String.replace(@_BUILD_ARCH, config.build_arch)
     |> String.replace(@_SUMMARY, config.summary)
@@ -112,6 +113,10 @@ defmodule ReleaseManager.Plugin.Rpm do
 
     File.write!(dest, contents)
     config
+  end
+
+  defp normalize_version(version) do
+    version |> String.split([".", "-"]) |> Enum.map(fn(segment) ->  Regex.replace(~r/[^0-9]+/, segment, "") end) |> Enum.join(".")
   end
 
   defp copy_extra_sources(config) do
@@ -175,7 +180,7 @@ defmodule ReleaseManager.Plugin.Rpm do
   end
 
   def rpm_file_name(name, version, arch, match \\ false),
-    do: "#{name}-#{version}-0.#{if match, do: "*", else: ""}#{arch}.rpm"
+    do: "#{name}-#{version |> normalize_version}-0.#{if match, do: "*", else: ""}#{arch}.rpm"
 
   def get_config_item(config, item, default) do
     app    = String.to_atom config.name
