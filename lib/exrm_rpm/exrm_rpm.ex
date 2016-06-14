@@ -23,6 +23,7 @@ defmodule ReleaseManager.Plugin.Rpm do
 
   @_NAME        "{{{PROJECT_NAME}}}"
   @_VERSION     "{{{PROJECT_VERSION}}}"
+  @_RELEASE     "{{{PROJECT_RELEASE}}}"
   @_TOPDIR      "{{{PROJECT_TOPDIR}}}"
   @_BUILD_ARCH  "{{{BUILD_ARCHITECTURE}}}"
   @_SUMMARY     "{{{SUMMARY}}}"
@@ -91,7 +92,8 @@ defmodule ReleaseManager.Plugin.Rpm do
 
     contents = File.read!(spec)
     |> String.replace(@_NAME, config.name)
-    |> String.replace(@_VERSION, config.version)
+    |> String.replace(@_VERSION, config.version |> normalize_version)
+    |> String.replace(@_RELEASE, config.version)
     |> String.replace(@_TOPDIR, config.build_dir)
     |> String.replace(@_BUILD_ARCH, config.build_arch)
     |> String.replace(@_SUMMARY, config.summary)
@@ -112,6 +114,25 @@ defmodule ReleaseManager.Plugin.Rpm do
 
     File.write!(dest, contents)
     config
+  end
+
+  defp normalize_version(version) when is_binary(version) do
+    version |> String.split([".", "-"]) |> normalize_version |> Enum.join(".")
+  end
+  defp normalize_version(v = [_maj, _min, _patch]) do
+    v
+  end
+  defp normalize_version(v = [maj, _min, _patch, _pre]) when is_binary(maj) do
+    normalize_version(v |> Enum.map(fn(segment) -> Regex.replace(~r/[^0-9]+/, segment, "") |> String.to_integer end))
+  end
+  defp normalize_version([maj, 0, 0, pre]) when maj > 0 do
+    [maj - 1, 99, 99, 99, pre]
+  end
+  defp normalize_version([maj, min, 0, pre]) when min > 0 do
+    [maj, min - 1, 99, 99, pre]
+  end
+  defp normalize_version([maj, min, patch, pre]) when patch > 0 do
+    [maj, min, patch - 1, 99, pre]
   end
 
   defp copy_extra_sources(config) do
@@ -175,7 +196,7 @@ defmodule ReleaseManager.Plugin.Rpm do
   end
 
   def rpm_file_name(name, version, arch, match \\ false),
-    do: "#{name}-#{version}-0.#{if match, do: "*", else: ""}#{arch}.rpm"
+    do: "#{name}-#{version |> normalize_version}-0.#{if match, do: "*", else: ""}#{arch}.rpm"
 
   def get_config_item(config, item, default) do
     app    = String.to_atom config.name

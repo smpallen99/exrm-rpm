@@ -1,6 +1,7 @@
 %define install_dir     /usr/local
 %define _topdir         {{{PROJECT_TOPDIR}}}
 %define temp_dir       /tmp
+%define erl_release    {{{PROJECT_RELEASE}}}
 Name:    {{{PROJECT_NAME}}}
 Version: {{{PROJECT_VERSION}}}
 
@@ -12,7 +13,7 @@ Summary: {{{SUMMARY}}}
 Group:         Applications
 License:       GPL
 URL:           https://github.com/bitwalker/exrm
-Source0:       %{name}-%{version}.tar.gz
+Source0:       %{name}-%{erl_release}.tar.gz
 Source1:       %{name}
 BuildRoot:     %{_tmppath}/%{name}-root
 BuildArchitectures: {{{BUILD_ARCHITECTURE}}}
@@ -36,15 +37,15 @@ rm -rf $RPM_BUILD_ROOT
 %post
 if [ $1 -eq 1 ]; then
     # new install
-    tar xzf %{temp_dir}/%{name}-%{version}.tar.gz -C %{install_dir}/%{name}
-    rm %{temp_dir}/%{name}-%{version}.tar.gz
+    tar xzf %{temp_dir}/%{name}-%{erl_release}.tar.gz -C %{install_dir}/%{name}
+    rm %{temp_dir}/%{name}-%{erl_release}.tar.gz
     /sbin/chkconfig --add %{name}
     /sbin/service %{name} start  > /dev/null 2>&1
 else
     # upgrade
-    mkdir %{install_dir}/%{name}/releases/%{version}
-    mv %{temp_dir}/%{name}-%{version}.tar.gz %{install_dir}/%{name}/releases/%{version}/%{name}.tar.gz
-    cd %{install_dir}/%{name} && bin/%{name} upgrade "%{version}"
+    mkdir %{install_dir}/%{name}/releases/%{erl_release}
+    mv %{temp_dir}/%{name}-%{erl_release}.tar.gz %{install_dir}/%{name}/releases/%{erl_release}/%{name}.tar.gz
+    cd %{install_dir}/%{name} && bin/%{name} upgrade "%{erl_release}"
 fi
 exit 0
 
@@ -59,7 +60,7 @@ exit 0
 
 %files
 %defattr(-, root, root, -)
-%{temp_dir}/%{name}-%{version}.tar.gz
+%{temp_dir}/%{name}-%{erl_release}.tar.gz
 %dir %{install_dir}/%{name}
 
 %defattr(755, root, root, -)
